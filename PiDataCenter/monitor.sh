@@ -31,5 +31,5 @@ else
     apt-get install python3-dateutil -y
 fi
 
-echo "running monitor.py..."
+echo "Running monitor.py with RPI_CLUSTER=$RPI_CLUSTER"
 python3 monitor.py
