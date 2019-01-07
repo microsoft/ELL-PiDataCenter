@@ -8,16 +8,16 @@ cd /home/pi/
 
 while :
 do
-    FOUND="$(ping -c 2 clovett14 | sed ':a;N;$!ba;s/.*bytes from.*/FOUND/g' )"
+    FOUND="$(ping -c 2 github.com | sed ':a;N;$!ba;s/.*bytes from.*/FOUND/g' )"
     if [[ "$FOUND" == "FOUND" ]]
     then
         break
     fi
-    echo "Not finding 'clovett14', sleeping for 5 seconds..."
+    echo "Not finding 'github.com', sleeping for 5 seconds..."
     sleep 5
 done
 
-echo Updating scripts from 'clovett14'...
+echo Updating scripts from 'github.com'...
 
 fetch() {
     local file=$1
