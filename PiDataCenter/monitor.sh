@@ -14,21 +14,24 @@ echo newhash=$newhash
 
 if [ "$hash" != "$newhash" ]
 then
-    sudo cp config.txt /boot/config.txt
+    cp config.txt /boot/config.txt
     echo "config has changed, pi needs a reboot" > reboot.txt
 elif [ -f reboot.txt ]; then
-    rm reboot.txt    
+    rm reboot.txt
 fi
 
+source /home/pi/.bashrc
+
+echo === Checking that RPI_CLUSTER=$RPI_CLUSTER
+
 if [[ -d "/home/pi/miniconda3" ]]; then
-    export PATH="/home/pi/miniconda3/bin:$PATH"
     pip install requests
     pip install python-dateutil
 else
-    sudo pip3 install requests
-    sudo pip3 install python-dateutil
-    sudo apt-get install python3-dateutil -y
+    pip3 install requests
+    pip3 install python-dateutil
+    apt-get install python3-dateutil -y
 fi
 
 echo "running monitor.py..."
-sudo python3 monitor.py
+python3 monitor.py
