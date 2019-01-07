@@ -22,8 +22,6 @@ fi
 
 source /home/pi/.bashrc
 
-echo === Checking that RPI_CLUSTER=$RPI_CLUSTER
-
 if [[ -d "/home/pi/miniconda3" ]]; then
     pip install requests
     pip install python-dateutil
