@@ -6,19 +6,15 @@ Raspberry Pi list of available machines.  The service code is implemented in Nod
 
 ## Adding a Raspberry Pi
 
-To add a Raspberry Pi to the service simply edit the `/etc/rc.local` file and add the following before the bottom `exit` line:
-```shell
-/home/pi/ELL-PiDataCenter/PiDataCenter/monitor.sh&
-```
-Don't forget the ampersand.  
-
-Then run the following from the /home/pi folder:
+To add a new raspberry pi to the service, first you need to clone the following code into your /home/pi folder:
 ```shell
 cd ~
 git clone https://github.com/Microsoft/ELL-PiDataCenter.git
-pushd ELL-PiDataCenter/PiDataCenter
-chmod +x monitor.sh
-popd
+```
+
+Then edit your `/etc/rc.local` file and add the following before the bottom `exit` line:
+```shell
+/home/pi/ELL-PiDataCenter/launch.sh
 ```
 
 Now when you reboot your pi it will automatically connect to the service and you should see the machine listed there.
