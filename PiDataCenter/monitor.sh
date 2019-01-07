@@ -32,14 +32,6 @@ fetch() {
     done
 }
 
-if [[ -d "/home/pi/ELL-PiDataCenter" ]]; then
-    pushd /home/pi/ELL-PiDataCenter
-    git pull
-    popd
-else
-    git clone https://github.com/Microsoft/ELL-PiDataCenter.git
-fi
-
 pushd /home/pi/ELL-PiDataCenter/PiDataCenter
 chmod +x setup.sh
 chmod +x monitor.sh
@@ -61,11 +53,13 @@ fi
 
 if [[ -d "/home/pi/miniconda3" ]]; then
     export PATH="/home/pi/miniconda3/bin:$PATH"
+    pip install requests
+    pip install python-dateutil
+else
+    sudo pip3 install requests
+    sudo pip3 install python-dateutil
+    sudo apt-get install python3-dateutil -y
 fi
-  
-sudo pip3 install requests
-sudo pip3 install python-dateutil
-sudo apt-get install python3-dateutil -y
 
 echo "running monitor.py..."
 sudo python3 monitor.py
