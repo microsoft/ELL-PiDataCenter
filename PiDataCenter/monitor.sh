@@ -17,11 +17,13 @@ then
     sudo cp config.txt /boot/config.txt
     echo "config has changed, pi needs a reboot" > reboot.txt
 elif [ -f reboot.txt ]; then
-    rm reboot.txt    
+    rm reboot.txt
 fi
 
+source /home/pi/.bashrc
+
 if [[ -d "/home/pi/miniconda3" ]]; then
-    export PATH="/home/pi/miniconda3/bin:$PATH"
+    source activate py34
     pip install requests
     pip install python-dateutil
 else
@@ -32,3 +34,4 @@ fi
 
 echo "running monitor.py..."
 sudo python3 monitor.py
+
