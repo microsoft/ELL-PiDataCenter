@@ -14,6 +14,7 @@ do
 done
 
 echo Updating scripts from 'github.com'...
+source /home/pi/.cluster
 cd /home/pi/ELL-PiDataCenter/PiDataCenter
 git pull
 ./monitor.sh > /home/pi/monitor.log 2>&1 &
