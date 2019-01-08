@@ -31,6 +31,8 @@ def main():
 
   for e in machines:
     msg = e.ip_address
+    if e.hostname:
+      msg += " " + e.hostname
     if e.command == "Lock":
       msg += " locked"
     if e.current_user_name:
