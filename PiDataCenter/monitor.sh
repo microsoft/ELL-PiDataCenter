@@ -22,14 +22,10 @@ fi
 
 source /home/pi/.bashrc
 
-if [[ -d "/home/pi/miniconda3" ]]; then
-    pip install requests
-    pip install python-dateutil
-else
-    pip3 install requests
-    pip3 install python-dateutil
-    apt-get install python3-dateutil -y
-fi
+apt-get install python3-pip
+pip3 install requests
+pip3 install python-dateutil
+apt-get install python3-dateutil -y
 
 echo "Running monitor.py with RPI_CLUSTER=$RPI_CLUSTER"
 python3 monitor.py

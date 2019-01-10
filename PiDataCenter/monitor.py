@@ -9,10 +9,13 @@
 ##
 ###################################################################################################
 import os
+import platform
 import socket
 import subprocess
 import sys
 import time
+
+print("using python version:", platform.python_version())
 
 import picluster
 import endpoint
@@ -96,4 +99,3 @@ while True:
             time.sleep(60 - now.tm_sec) # try and sync on minutes        
     except:
         time.sleep(10)
-        pass
