@@ -2,6 +2,7 @@
 
 # This script launches the monitor.sh script, after first syncing the latest bits from github.
 
+# first wait for network connection to finish setting up so we can reach github.
 while :
 do
     FOUND="$(ping -c 2 github.com | sed ':a;N;$!ba;s/.*bytes from.*/FOUND/g' )"
@@ -14,7 +15,6 @@ do
 done
 
 echo Updating scripts from 'github.com'...
-source /home/pi/.cluster
 cd /home/pi/ELL-PiDataCenter/PiDataCenter
 git pull
 ./monitor.sh > /home/pi/monitor.log 2>&1 &
