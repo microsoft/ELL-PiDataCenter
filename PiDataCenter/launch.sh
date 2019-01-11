@@ -17,4 +17,4 @@ done
 echo Updating scripts from 'github.com'...
 cd /home/pi/ELL-PiDataCenter/PiDataCenter
 git pull
-./monitor.sh > /home/pi/monitor.log 2>&1 &
+sudo ./monitor.sh > /home/pi/monitor.log 2>&1 &
