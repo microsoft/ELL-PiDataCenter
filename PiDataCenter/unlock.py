@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 ###################################################################################################
-##
-##  Project:  Embedded Learning Library (ELL)
-##  File:     unlock.py
-##  Authors:  Chris Lovett
-##
-##  Requires: Python 3.x
-##
+#
+#  Project: Embedded Learning Library (ELL)
+#  File: unlock.py
+#  Authors: Chris Lovett
+#
+#  Requires: Python 3.x
+#
 ###################################################################################################
-import socket
-import time
 import picluster
-import platform
 import sys
 import argparse
-import endpoint 
+import endpoint
+
 
 def main():
   parser = argparse.ArgumentParser("""Unlock a given raspberry pi machine
@@ -22,11 +20,11 @@ def main():
       python unlock.py 157.54.158.128
       python unlock.py 157.*
       python unlock.py --me
-  """
-  )
+  """)
   parser.add_argument("ip_addresses", nargs="*", help="The address of the machine(s) to unlock")
-  parser.add_argument("--me", help="unlock all machines locked by me",  action="store_true", default=False)
-  parser.add_argument("--lock_override", help="unlock even if it was locked by someone else",  action="store_true", default=False)
+  parser.add_argument("--me", help="unlock all machines locked by me", action="store_true", default=False)
+  parser.add_argument("--lock_override", help="unlock even if it was locked by someone else",
+                      action="store_true", default=False)
   args = parser.parse_args()
   cluster = picluster.PiBoardTable(endpoint.url, endpoint.apikey)
   machines = cluster.get_matching_machines(args.ip_addresses)
@@ -50,7 +48,7 @@ def main():
             cluster.username = e.current_user_name
             try:
               cluster.unlock(e.ip_address)
-            except:  
+            except:
               errorType, value, traceback = sys.exc_info()
               print("### Exception locking machine {}: {}: {}".format(e.ip_address, errorType, value))
             cluster.username = saved
@@ -59,6 +57,7 @@ def main():
           cluster.unlock(e.ip_address)
     if count == 0:
       print("no machines matching your input were locked")
+
 
 if __name__ == '__main__':
   main()

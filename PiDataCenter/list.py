@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 ###################################################################################################
-##
-##  Project:  Embedded Learning Library (ELL)
-##  File:     list.py
-##  Authors:  Chris Lovett
-##
-##  Requires: Python 3.x
-##
+#
+#  Project:  Embedded Learning Library (ELL)
+#  File:     list.py
+#  Authors:  Chris Lovett
+#
+#  Requires: Python 3.x
+#
 ###################################################################################################
 import argparse
 
 import picluster
 import endpoint
+
 
 def main():
   parser = argparse.ArgumentParser("""List all or some subset of pi machines
@@ -20,7 +21,7 @@ def main():
       python list.py 10.*
       python list.py --me
   """
-  )
+                                   )
   parser.add_argument("ip_addresses", nargs="*", help="The address of the machine(s) to list")
   args = parser.parse_args()
 
@@ -39,9 +40,9 @@ def main():
       msg += " by " + e.current_user_name
     if e.current_task_name:
       msg += " for '" + e.current_task_name + "'"
-    if e.alive == False:
+    if not e.alive:
       msg += " is dead?"
-      
+
     print(msg)
 
 

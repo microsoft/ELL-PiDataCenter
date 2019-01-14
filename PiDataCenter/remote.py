@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 ###################################################################################################
-##
-##  Project:  Embedded Learning Library (ELL)
-##  File:     remote.py
-##  Authors:  Chris Lovett
-##
-##  Requires: Python 3.x
-##
+#
+#  Project: Embedded Learning Library (ELL)
+#  File: remote.py
+#  Authors: Chris Lovett
+#
+#  Requires: Python 3.x
+#
 ###################################################################################################
 import argparse
 import logging
-import os
 import re
 import sys
-import time
 
 import endpoint
 
@@ -22,6 +20,7 @@ import dask.multiprocessing
 
 import picluster
 import remoterunner
+
 
 class RemoteHelper:
     def __init__(self):
@@ -44,7 +43,7 @@ class RemoteHelper:
         self.lock_override
         machine = None
         result = "==========" + ip + "====================================\n"
-        
+
         if not lock_override:
             try:
                 machine = self.cluster.get(ip)
@@ -58,18 +57,18 @@ class RemoteHelper:
                 print(ip + ": ### lock failed: " + str(value))
                 return result
 
-        runner = remoterunner.RemoteRunner (cluster = self.cluster_address, 
-            ipaddress = ip, username = "pi", password = password,
-            target_dir = "/home/pi", verbose=verbose)
-            
+        runner = remoterunner.RemoteRunner(cluster=self.cluster_address,
+                                           ipaddress=ip, username="pi", password=password,
+                                           target_dir="/home/pi", verbose=verbose)
+
         try:
-            runner.connect_ssh()    
+            runner.connect_ssh()
             output = runner.exec_remote_command(command)
             result += "\n".join(output)
         except:
             errorType, value, traceback = sys.exc_info()
             print(ip + ": ### connection failed: " + str(value))
-        
+
         if not lock_override:
             try:
                 machine = self.cluster.get(ip)
@@ -79,44 +78,48 @@ class RemoteHelper:
             except:
                 errorType, value, traceback = sys.exc_info()
                 print(ip + ": ### unlock failed: " + str(value))
-            
+
         return result
 
-    def get_matching_machines(self, selected_ips, platform, ignore_dead_status = False):
+    def get_matching_machines(self, selected_ips, platform, ignore_dead_status=False):
         addresses = []
         for e in self.cluster.get_all():
             if ignore_dead_status or e.alive:
                 for s in selected_ips:
                     if s == '*' or s == e.ip_address or re.match(s, e.ip_address):
-                        if platform == None or platform in e.platform:
-                            if not e.ip_address in addresses:                    
-                                addresses += [ e.ip_address ]
+                        if platform is None or platform in e.platform:
+                            if e.ip_address not in addresses:
+                                addresses += [e.ip_address]
         return addresses
+
 
 if __name__ == '__main__':
     cmd = []
     addresses = []
-    
+
     logging.basicConfig(level=logging.INFO, format="%(message)s")
 
     parser = argparse.ArgumentParser("""Run a command on every available raspberry pi
     e.g.
         python remote.py -c cat /proc/cpuinfo -a 157.54.158.128 157.54.158.36
         python remote.py -c cat /proc/cpuinfo -a *
-    """
-    )
+    """)
     parser.add_argument("--command", "-c", nargs="+", help="The command line arguments to run on the remote machines")
     parser.add_argument("--addresses", "-a", nargs="*", help="The remote addresses to use (default *)", default="*")
     parser.add_argument("--max_threads", "-m", type=int, help="Maximum number of parallel jobs (default 8)", default=8)
-    parser.add_argument("--lock_override", "-o", help="Override locked status and execute command anyway (default False)", action="store_true")
-    parser.add_argument("--dead_override", "-do", help="Override dead status and execute command anyway (default False)", action="store_true")
+    parser.add_argument("--lock_override", "-o",
+                        help="Override locked status and execute command anyway (default False)",
+                        action="store_true")
+    parser.add_argument("--dead_override", "-do",
+                        help="Override dead status and execute command anyway (default False)",
+                        action="store_true")
     parser.add_argument("--verbose", "-v", help="Print output incrementally (default False)", action="store_true")
     parser.add_argument("--platform", "-p", help="An optional sub-string to match with the target pi (default None)")
     args = parser.parse_args()
 
     cmd = args.command
     lock_override = args.lock_override
-    verbose = args.verbose    
+    verbose = args.verbose
 
     with RemoteHelper() as helper:
         addresses = helper.get_matching_machines(args.addresses, args.platform, args.dead_override)
@@ -124,14 +127,13 @@ if __name__ == '__main__':
             print("No machines found macthing {}".format(args.addresses))
 
         cmd = " ".join(cmd)
-        results = [] 
+        results = []
         if args.max_threads == 1:
             for ip in addresses:
-                results += [ helper.run_remote(ip, cmd, endpoint.password, verbose) ]
+                results += [helper.run_remote(ip, cmd, endpoint.password, verbose)]
         else:
             values = [delayed(helper.run_remote)(ip, cmd, endpoint.password, verbose) for ip in addresses]
             results = compute(*values, get=dask.multiprocessing.get, num_workers=args.max_threads)
 
         if not verbose:
             print("\n".join(results))
-

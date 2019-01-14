@@ -1,32 +1,39 @@
 #!/usr/bin/env python3
 ###################################################################################################
-##
-##  Project:  Embedded Learning Library (ELL)
-##  File:     test.py
-##  Authors:  Chris Lovett
-##
-##  Requires: Python 3.x
-##
+#
+#  Project: Embedded Learning Library (ELL)
+#  File: test.py
+#  Authors: Chris Lovett
+#
+#  Requires: Python 3.x
+#
 ###################################################################################################
 import picluster
-import sys
-import time
 
-# This test script shows how to interact with the Azure pi data center cloud service.
+# This test script shows how to interact with the Azure pi data center cloud
+# service.
 # It uses the 'requests' module to do HTTP interactions with Json data.
-# See http://docs.python-requests.org/en/v1.0.0/user/quickstart/ 
-
+# See http://docs.python-requests.org/en/v1.0.0/user/quickstart/
 import endpoint
 
 ip = "192.168.1.999"  # make it invalid ip address on purpose so it never colides with real machine
-entity = {'IpAddress': ip, 'OsName': 'Raspbian', 'OsVersion': 'Jesse', 'CurrentTaskName': "RollingBuild", 'CurrentUserName': '','Command':''}
+entity = {
+    'IpAddress': ip,
+    'OsName': 'Raspbian',
+    'OsVersion': 'Jesse',
+    'CurrentTaskName': "RollingBuild",
+    'CurrentUserName': '',
+    'Command': ''
+}
 user = "Test"
+
 
 def test_assert(e, message):
     status = "SUCCESS"
     if not e:
         status = "FAILED"
     print("{}, {}".format(message, status))
+
 
 # add or update
 t = picluster.PiBoardTable(endpoint.url, endpoint.apikey, user)
@@ -42,7 +49,7 @@ test_assert(len(r) > 0 and ip in [x.ip_address for x in r], "get_all")
 r = t.get(ip)
 test_assert(r and r.ip_address == ip, "get the entity we added")
 
-# locking 
+# locking
 r = t.lock(ip, 'Test')
 test_assert(r and r.ip_address == ip and r.current_user_name == t.username, "lock our machine")
 

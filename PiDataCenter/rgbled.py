@@ -1,7 +1,16 @@
-
+#!/usr/bin/env python3
+###################################################################################################
+#
+#  Project: Embedded Learning Library (ELL)
+#  File: rgbled.py
+#  Authors: Chris Lovett
+#
+#  Requires: Python 3.x
+#
+###################################################################################################
 import sys
 import time
-import math
+
 
 try:
     import RPi.GPIO as GPIO
@@ -14,15 +23,16 @@ except:
 # where the long pin is connected to 3.3 V
 # and a HIGH GPIO output turns off that color
 # and LOW GPIO output causes 3.3V to flow (so color is on)
-RED_PIN=19
-GREEN_PIN=15
-BLUE_PIN=13
+RED_PIN = 19
+GREEN_PIN = 15
+BLUE_PIN = 13
+
 
 class LedPwmDriver:
 
     def __init__(self):
-        self.chan_list=[RED_PIN, GREEN_PIN, BLUE_PIN]
-        self.red = 0 # off
+        self.chan_list = [RED_PIN, GREEN_PIN, BLUE_PIN]
+        self.red = 0  # off
         self.green = 0
         self.blue = 0
         self.off = True
@@ -32,9 +42,9 @@ class LedPwmDriver:
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.chan_list, GPIO.OUT, initial=GPIO.HIGH)
-        self.red_pwm = GPIO.PWM(RED_PIN,100)
-        self.green_pwm = GPIO.PWM(GREEN_PIN,100)
-        self.blue_pwm = GPIO.PWM(BLUE_PIN,100)
+        self.red_pwm = GPIO.PWM(RED_PIN, 100)
+        self.green_pwm = GPIO.PWM(GREEN_PIN, 100)
+        self.blue_pwm = GPIO.PWM(BLUE_PIN, 100)
 
     def set_color(self, r, g, b):
         # convert rgb to pwm count
@@ -58,7 +68,7 @@ class LedPwmDriver:
         self.blue_pwm.stop()
         time.sleep(1)
         GPIO.output(self.chan_list, GPIO.HIGH)
-        
+
     def fade_to(self, r, g, b, seconds):
         rate = 1000.0 / 60.0  # 60 FPS should be good
         steps = float(seconds) * rate
@@ -72,29 +82,28 @@ class LedPwmDriver:
             time.sleep(rate / 1000.0)
         self.set_color(r, g, b)
 
+
 if __name__ == '__main__':
     delay = 0.3
     led = LedPwmDriver()
-    
-    fade_time = 2 # second
+
+    fade_time = 2  # second
     max = 100
-    led.fade_to(max,0,0,fade_time)
-    led.fade_to(0,0,0,fade_time)
-    led.fade_to(0,max,0,fade_time)
-    led.fade_to(0,0,0,fade_time)
-    led.fade_to(0,0,max,fade_time)
-    led.fade_to(0,0,0,fade_time)
-    
-    led.fade_to(max,max,0,fade_time)
-    led.fade_to(0,0,0,fade_time)
-    led.fade_to(max,0,max,fade_time)
-    led.fade_to(0,0,0,fade_time)
-    led.fade_to(0,max,max,fade_time)
-    led.fade_to(0,0,0,fade_time)
-    
-    led.fade_to(max,max,max,fade_time)
-    led.fade_to(0,0,0,fade_time)
-    
+    led.fade_to(max, 0, 0, fade_time)
+    led.fade_to(0, 0, 0, fade_time)
+    led.fade_to(0, max, 0, fade_time)
+    led.fade_to(0, 0, 0, fade_time)
+    led.fade_to(0, 0, max, fade_time)
+    led.fade_to(0, 0, 0, fade_time)
+
+    led.fade_to(max, max, 0, fade_time)
+    led.fade_to(0, 0, 0, fade_time)
+    led.fade_to(max, 0, max, fade_time)
+    led.fade_to(0, 0, 0, fade_time)
+    led.fade_to(0, max, max, fade_time)
+    led.fade_to(0, 0, 0, fade_time)
+
+    led.fade_to(max, max, max, fade_time)
+    led.fade_to(0, 0, 0, fade_time)
+
     led.stop()
-
-
