@@ -188,7 +188,7 @@ class PiBoardTable:
             name += "_" + self.get_local_ip()
         return name
 
-    def wait_for_free_machine(self, jobName, reAddress=None, rePlatform=None):
+    def wait_for_free_machine(self, jobName, reAddress=None, rePlatform=None, ignore_alive=False):
         """ find a free machine on the cluster, optionally matching the given regex pattern on ip address or platform"""
         while True:
             self.logger.info("Waiting for a free machine")
@@ -200,7 +200,7 @@ class PiBoardTable:
                     address_match = not reAddress or re.match(reAddress, e.ip_address)
                     platform_match = not rePlatform or re.match(rePlatform, e.platform)
                     if (address_match and platform_match):
-                        if e.alive and e.command != 'Lock':
+                        if ignore_alive or (e.alive and e.command != 'Lock'):
                             result = self.lock(e.ip_address, jobName)
                             # no exception, so we got it
                             return result
