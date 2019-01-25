@@ -21,13 +21,13 @@ Now when you reboot your pi it will automatically connect to the service and you
 
 ## Using the Service
 
-The easiest way to use the service is to use `ELL/tools/utilities/pitest/drivetest.py` which is already setup to use this service.
+The easiest way to use the service is to use `ELL/tools/utilities/pitest/drivetest.py` which is already set up to use this service.
 
 You can also use the service manually by running these two scripts:
 * `lock.py ipaddress` to lock a machine listed as free on the website.
 * `unlock.py ipaddress` to unlock the machine when you are finished.
 
-This is handy if you want to login using SSH and do long running work on a given machine, perhaps you need to install some new stuff and so on.
+This is handy if you want to log in using SSH and do long running work on a given machine, perhaps you need to install some new stuff and so on.
 
 But if you want to automate a short job you can import `picluster.py` into your app and do the following:
 
@@ -47,3 +47,10 @@ This is picking up your user name as well and it ensures you are the only one th
 It is convenient to see who has locked the machine anyway, in case we need to follow up with that person to see if they are done
 in the event that something goes wrong and they accidentally forgot to free the machine.
 
+Note that in order to use the above scripts, the following environment variables must be set:
+
+| Varaible       | Value                                       |
+|----------------|---------------------------------------------|
+| `RPI_CLUSTER`  | The URL of the cluster                      |
+| `RPI_APIKEY`   | The API key to use                          |
+| `RPI_PASSWORD` | The login password for the cluster machines |
