@@ -1,4 +1,3 @@
-
 ## README
 
 This folder contains is the client code for talking to the [ELL PiClusterService](https://github.com/Microsoft/ELL-PiClusterService) that you have
@@ -12,6 +11,16 @@ cd ~
 git clone https://github.com/Microsoft/ELL-PiDataCenter.git
 ```
 
+And create a file in /home/pi called `.cluster` that contains the following:
+```shell
+export RPI_CLUSTER="<your_cluster_service_url>"
+export RPI_APIKEY="<your_api_key>"
+export RPI_PASSWORD="<your_pi_machine_password>"
+```
+
+Copy value of these variables from the setup you created when you
+followed the directions at [ELL PiClusterService](https://github.com/Microsoft/ELL-PiClusterService).
+
 Then edit the `/etc/rc.local` file on each Raspberry Pi machine to add the following before the bottom `exit` line:
 ```shell
 /home/pi/ELL-PiDataCenter/launch.sh
@@ -19,10 +28,9 @@ Then edit the `/etc/rc.local` file on each Raspberry Pi machine to add the follo
 
 Now when you reboot the Raspberry Pi it will automatically connect to the service and you should see the machine listed there.
 
-
 ## Using the Service
 
-In order to use the following scripts, you must set these environment variables:
+In order to use the following scripts, you must also set the same environment variables on whatever machine you are using:
 
 | Varaible       | Value                                       |
 |----------------|---------------------------------------------|
@@ -30,11 +38,7 @@ In order to use the following scripts, you must set these environment variables:
 | `RPI_APIKEY`   | The API key to use                          |
 | `RPI_PASSWORD` | The login password for the cluster machines |
 
-Copy value of these variables from the setup you created when you
-followed the directions at [ELL PiClusterService](https://github.com/Microsoft/ELL-PiClusterService).
-
-
-Once the above environemnt variables are configured you can test the service manually by running these scripts:
+Once the above environment variables are configured you can test the service manually by running these scripts:
 * `list.py` to list all available machines and see their status.
 * `lock.py ipaddress` to lock a machine listed as free on the website.
 * `unlock.py ipaddress` to unlock the machine when you are finished.
@@ -48,7 +52,7 @@ import picluster
 cluster = picluster.PiBoardTable("<app_name>.azurewebsites.net/api/")
 machine = self.cluster.wait_for_free_machine("some descriptive job name")
 ```
-This will wait until a machine becomes available, lock it for your job, then you can do what drivetest does to send the job to the machine using SCP and SSH libraries.  When the job is finished run this:
+This will wait until a machine becomes available, lock it for your job, then you can do whatever you want to do on the machine using SCP and SSH libraries or whatever.  When the job is finished run this:
 
 ```python
 cluster.unlock(machine.ip_address)
@@ -60,5 +64,5 @@ in the event that something goes wrong and they accidentally forgot to free the 
 
 ## Example Usage
 
-The [pitest](https://github.com/Microsoft/ELL/tree/master/tools/utilities/pitest)folder in the ELL repo shows how to create a fully automated test that uses this cluster service to get a free raspberry pi, then use SSH and SCP to copy bits over to that machine and run tests on it, get the results back, then unlock the machine.
+The [pitest](https://github.com/Microsoft/ELL/tree/master/tools/utilities/pitest) folder in the ELL repo shows how to create a fully automated test that uses this cluster service to get a free raspberry pi, then use SSH and SCP to copy bits over to that machine and run tests on it, get the results back, then unlock the machine.
 
