@@ -23,7 +23,7 @@ followed the directions at [ELL PiClusterService](https://github.com/Microsoft/E
 
 Then edit the `/etc/rc.local` file on each Raspberry Pi machine to add the following before the bottom `exit` line:
 ```shell
-/home/pi/ELL-PiDataCenter/launch.sh
+/home/pi/ELL-PiDataCenter/PiDataCenter/launch.sh
 ```
 
 Now when you reboot the Raspberry Pi it will automatically connect to the service and you should see the machine listed there.
