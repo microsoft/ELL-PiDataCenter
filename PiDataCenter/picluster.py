@@ -96,7 +96,11 @@ class PiBoardTable:
         r = requests.post(self.endpoint + command, data=body, headers=headers)
         if r.status_code != 200:
             raise Exception("update failed: " + str(r.status_code))
-        e = json.loads(r.text)
+        try:
+            e = json.loads(r.text)            
+        except:
+            self.logger.info("### Error parsing response: {}".format(r.text))
+            sys.exit(1)
         if isinstance(e, dict):
             return PiBoardEntity(e)
         return None
@@ -125,8 +129,12 @@ class PiBoardTable:
     def get_all(self):
         r = requests.get(self.endpoint)
         result = []
-        for i in json.loads(r.text):
-            result.append(PiBoardEntity(i))
+        try:
+            for i in json.loads(r.text):
+                result.append(PiBoardEntity(i))
+        except:
+            self.logger.info("### Error parsing response: {}".format(r.text))
+            sys.exit(1)
         return result
 
     def delete(self, id):

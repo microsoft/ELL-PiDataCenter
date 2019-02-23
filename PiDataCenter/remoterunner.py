@@ -188,7 +188,7 @@ class RemoteRunner:
                                      filenames=self.source_files,
                                      dest=self.target_dir)
 
-    def copy_files(self):
+    def copy_back_files(self):
         if self.target_dir and self.copyback_files:
             os.makedirs(self.copyback_dir, exist_ok=True)
             with paramiko.SFTPClient.from_transport(self.ssh.get_transport()) as sftp:
@@ -225,7 +225,7 @@ class RemoteRunner:
                         self.target_dir, self.command))
                 else:
                     output = self.exec_remote_command(self.command)
-            self.copy_files()
+            self.copy_back_files()
             if self.cleanup:
                 self.clean_target()
             self.close_ssh()
