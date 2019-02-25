@@ -27,7 +27,7 @@ if [ "$(hostname -s)" == "bitscope_pi3" ]
 then
     echo "This is a bitscope pi"
 else
-    apt-get install python3-pip
+    apt-get install python3-pip -y
     pip3 install requests
     pip3 install python-dateutil
     apt-get install python3-dateutil -y
