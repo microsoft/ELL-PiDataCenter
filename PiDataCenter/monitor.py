@@ -38,7 +38,7 @@ def get_hostname():
 
 def get_temperature():
     try:
-        tempstring = subprocess.check_output(['cat /sys/class/thermal/thermal_zone0/temp']).decode('utf-8')
+        tempstring = subprocess.check_output(['cat', '/sys/class/thermal/thermal_zone0/temp']).decode('utf-8')
         return "{}'C".format(float(tempstring) / 1000)
     except:
         return ''
