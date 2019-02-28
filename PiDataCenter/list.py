@@ -22,6 +22,7 @@ def main():
       python list.py --me
   """
                                    )
+  parser.add_argument("--me", help="unlock all machines locked by me", action="store_true", default=False)
   parser.add_argument("ip_addresses", nargs="*", help="The address of the machine(s) to list")
   args = parser.parse_args()
 
@@ -31,6 +32,8 @@ def main():
   machines.sort(key=lambda x: x.ip_address)
 
   for e in machines:
+    if args.me and e.current_user_name != cluster.username:
+      continue
     msg = e.ip_address
     if e.hostname:
       msg += " " + e.hostname
