@@ -61,7 +61,6 @@ while True:
         if r:
             if os.path.isfile("nounlock"):
                 print("nounlock override, leaving machine locked")
-                os.remove("nounlock")  # one time override of auto-unlock behavior
             elif r.command == 'Lock':
                 try:
                     print("machine was locked when we rebooted, so free the lock now!")

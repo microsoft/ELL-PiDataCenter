@@ -1,7 +1,7 @@
 ## README
 
-This folder contains is the client code for talking to the [ELL PiClusterService](https://github.com/Microsoft/ELL-PiClusterService) that you have
-hosted in Azure.  The service code is implemented in Node.js and lives in it's own repo.
+This folder contains is the client code for talking to the ELL PiClusterService that you have
+hosted in Azure.  The service code is implemented in Node.js and lives in it's [own git repo](https://github.com/Microsoft/ELL-PiClusterService).
 
 ## Adding a Raspberry Pi
 
@@ -43,7 +43,7 @@ Once the above environment variables are configured you can test the service man
 * `lock.py ipaddress` to lock a machine listed as free on the website.
 * `unlock.py ipaddress` to unlock the machine when you are finished.
 
-This is handy if you want to login using SSH and do long running work on a given machine, perhaps you need to install some new stuff and so on.
+Manual locking is handy if you want to login using SSH and do long running work on a given machine, perhaps you need to install some new stuff and so on.
 
 But if you want to automate a short job you can import `picluster.py` into your app and do the following:
 
@@ -66,3 +66,13 @@ in the event that something goes wrong and they accidentally forgot to free the 
 
 The [pitest](https://github.com/Microsoft/ELL/tree/master/tools/utilities/pitest) folder in the ELL repo shows how to create a fully automated test that uses this cluster service to get a free raspberry pi, then use SSH and SCP to copy bits over to that machine and run tests on it, get the results back, then unlock the machine.
 
+## Auto Unlock on Reboot
+
+If a rasberry pi reboots for any reason the [monitor.py](https://github.com/Microsoft/ELL-PiDataCenter/blob/master/PiDataCenter/monitor.py) script will automatically unlock the pi.  This way a forced reboot of your entire cluster is an easy way to "free all the machines" and start again with a clean slate.
+
+But if you don't want to automatically unlock a particular device, you can force it to remain locked forever by doing this:
+
+```
+echo yes > /home/pi/nounlock
+```
+The precense of this file will tell monitor.py not to automatically unlock the device.

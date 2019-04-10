@@ -1,1 +1,2 @@
-python remote.py -c "echo yes > /home/pi/nounlock && echo rebooting... && sudo reboot" -a 10.* --lock_override  
+REM use this script to reboot all registered devices even if they are currently locked.
+python remote.py -c "echo rebooting... && sudo reboot" -a * --lock_override  
