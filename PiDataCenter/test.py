@@ -17,8 +17,7 @@ import picluster
 # See http://docs.python-requests.org/en/v1.0.0/user/quickstart/
 import endpoint
 
-import dask.threaded
-from dask import compute, delayed
+import dask.bag
 
 ip = "192.168.1.999"  # make it invalid ip address on purpose so it never colides with real machine
 entity = {
@@ -38,8 +37,10 @@ def test_assert(e, message):
         status = "FAILED"
     print("{}, {}".format(message, status))
 
+
 def get_free_machine(cluster, id):
     return cluster.wait_for_free_machine("test_" + str(id), ignore_alive=True)
+
 
 def test(server):
     # add or update
@@ -48,7 +49,7 @@ def test(server):
     # insert our test entity so we can play with it.
     a = picluster.PiBoardEntity(entity)
     r = t.update(a)
-    test_assert(r is None or r.ip_address != ip, "add or update entity")
+    test_assert(r.ip_address == ip, "add or update entity")
 
     # get all
     r = t.get_all()
@@ -90,22 +91,33 @@ def test(server):
     r = t.delete(ip)
     test_assert(r and r.current_user_name != t.username, "delete our machine")
 
-    # now a multithreaded lock to make sure it is safe!    
-    values = [delayed(get_free_machine)(t, x) for x in range(10)]
-    results = compute(*values, get=dask.threaded.get)
+    # create 10 machines so we can lock them all in parallel
+    for i in range(10):
+        a.ip_address = "255.255.255.{}".format(i)
+        r = t.update(a)
+
+    # now a multithreaded lock to make sure it is safe!
+    dask.config.set(scheduler='threads')
+    jobs = dask.bag.from_sequence(list(range(10)))
+    results = dask.bag.map(lambda id: get_free_machine(t, id), jobs).compute()
+
+    test_assert(len(results) == 10, "We have locked 10 machines in parallel")
+
     addresses = [r.ip_address for r in results]
     unique_list = set(addresses)
+    test_assert(len(addresses) == len(unique_list), "locked machines are unique")
+
     for m in unique_list:
         if len([x for x in addresses if x == m]) > 1:
             print("Machine {} locked twice, which should not be possible!!".format(m))
         t.unlock(m)
-    
-    test_assert(len(addresses) == len(unique_list), "locked machines are unique")
+        t.delete(m)
+
 
 if __name__ == '__main__':
-    
+
     parser = argparse.ArgumentParser("Test the picluster service")
     parser.add_argument("url", help="optional url to override the default so you can test locally, like 'http://localhost:1337/'", default=endpoint.url)
     args = parser.parse_args()
-  
+
     test(args.url)

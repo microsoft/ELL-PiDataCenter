@@ -97,7 +97,7 @@ class PiBoardTable:
         if r.status_code != 200:
             raise Exception("update failed: " + str(r.status_code))
         try:
-            e = json.loads(r.text)            
+            e = json.loads(r.text)
         except:
             self.logger.info("### Error parsing response: {}".format(r.text))
             sys.exit(1)
@@ -110,7 +110,7 @@ class PiBoardTable:
         if not self.ci:
             self.ci = cpuinfo.CpuInfo()
         entity.platform = self.ci.platform
-        self.send(entity, "update")
+        return self.send(entity, "update")
 
     def get(self, id):
         r = requests.get("{}?id={}".format(self.endpoint, id))
