@@ -102,6 +102,8 @@ class PiBoardTable:
             self.logger.info("### Error parsing response: {}".format(r.text))
             sys.exit(1)
         if isinstance(e, dict):
+            if "error" in e:
+                raise Exception(e["error"])
             return PiBoardEntity(e)
         return None
 

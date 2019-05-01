@@ -43,6 +43,15 @@ def get_free_machine(cluster, id):
 
 
 def test(server):
+    # test api key security
+    try:
+        t = picluster.PiBoardTable(server, "123", user)
+        a = picluster.PiBoardEntity(entity)
+        r = t.update(a)
+        test_assert(False, "api key security is working")
+    except Exception as e:
+        test_assert(str(e) == "api key mismatch", "api key security is working")
+
     # add or update
     t = picluster.PiBoardTable(server, endpoint.apikey, user)
 
